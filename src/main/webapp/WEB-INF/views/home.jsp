@@ -293,7 +293,6 @@ $(document).ready(function(){
         }
     });
 })
-
 </script>
 <style>
 body,html{
@@ -301,13 +300,23 @@ body,html{
 	margin: 0 auto;
 	font-family: 'Caveat', cursive;
 }
+
+a:hover{
+	text-decoration: none;
+}
+a:active{
+text-decoration: none;
+}
+a:visited{
+text-decoration: none;
+}
+
 .mydiv {
   width:100%;
   height:100%;
   font-weight:bold;
   animation: myanimation 20s infinite;
 }
-
 @keyframes myanimation {
   0% {background-color: rgb(102, 203, 153);}
   25%{background-color: rgb(114, 189, 194);}
@@ -382,7 +391,6 @@ body,html{
 .content .container{
 	width:100%;
 	height: 100%;
-	/* background-color: pink; */
 }
 
 
@@ -482,6 +490,9 @@ top: 0px;
         background-color: antiquewhite;
         float: left;
     }
+.cBox{
+		text-align: center;
+	}
 /* 탭 부분 설정끝 */
 </style>
 <head>
@@ -498,8 +509,8 @@ top: 0px;
 	</div>
 	<div class="loginBox">
 		<div class="wrap">
-  			<a href="#" class="button"><b>sign up</b></a>
-  			<a href="#" class="button"><b>log in</b></a>
+  			<a href="#" class="button buttonJoin"><b>sign up</b></a>
+  			<a href="#" class="button buttonLogin"><b>log in</b></a>
 		</div>
 	</div>
 </div>
@@ -622,7 +633,7 @@ top: 0px;
         </div>
     </div>
     <div class="boardContent">
-    
+    	
     </div>
 </div> 
 <!-- 컨텐츠 끝 -->
