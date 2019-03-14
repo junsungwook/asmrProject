@@ -278,6 +278,20 @@ $(document).ready(function(){
 	$(".windS").mouseup(function(){
 		wind.volume = $(".windS").val();
 	});
+	var tabSwitch = 0;
+    $(".tabButton").click(function(){
+        if(tabSwitch == 0){
+            $(".boardContent").animate({
+                width: "1000px"
+            }, 1000);
+            tabSwitch = 1; 
+        }else{
+        	$(".boardContent").animate({
+                width: "0px"
+            }, 1000);
+            tabSwitch = 0; 
+        }
+    });
 })
 
 </script>
@@ -436,11 +450,39 @@ body,html{
 	float: left;
 }
 /* 컨텐츠 row 설정끝 */
-
-
-
-
 /* 컨텐츠 부분 끝 */
+/* 탭 부분 설정시작 */
+.boardTab{
+display: inline-block;
+height: 1000px;
+position: fixed;
+right: 0px;
+top: 0px;
+}
+    .boardTab .tabButtonArea{
+    width: 40px;
+    height: 100%;
+    float: left;
+    }
+            .boardTab .tabButtonArea .tabButton{
+            width: 100%;
+            height: 80px;
+            background-color: antiquewhite;
+            border-radius:  30px 0px 0px 30px;
+            font-size: 0.7em;
+            color: white;
+            text-align: center;
+            }
+            .boardTab .tabButtonArea .tabButton p{
+                padding-top: 5px;
+            }
+    .boardTab .boardContent{
+        width: 0%;
+        height: 100%;
+        background-color: antiquewhite;
+        float: left;
+    }
+/* 탭 부분 설정끝 */
 </style>
 <head>
 	<title>main</title>
@@ -573,6 +615,16 @@ body,html{
 		</div>		
 	</div>
 </div>
+<div class="boardTab">
+    <div class="tabButtonArea">
+        <div class="tabButton">
+            <p>B<br>o<br>a<br>r<br>d</p>
+        </div>
+    </div>
+    <div class="boardContent">
+    
+    </div>
+</div> 
 <!-- 컨텐츠 끝 -->
 </body>
 </html>
