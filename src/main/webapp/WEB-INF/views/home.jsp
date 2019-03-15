@@ -23,7 +23,16 @@ $(document).ready(function(){
 	var wind = new Audio('resources/music/wind.mp3');
 	
 	var arr = new Array(water,bug,cafe,fire,forest,home,library,night,paris,rain,sea,snow,thunder,train,wind);
-
+	
+	$(".soundSave").click(function(){
+		for(var i = 0; i<arr.length; i++){
+			if(!arr[i].paused){
+				alert(i+"번째가 재생중");
+			}
+		}
+	});
+	
+	
 	$(".volumeBox").click(function(){
 		for(var i = 0; i<arr.length; i++){
 			if(arr[i].muted){
@@ -284,6 +293,7 @@ $(document).ready(function(){
             $(".boardContent").animate({
                 width: "1000px"
             }, 1000);
+            $(".boardContent").css("display","block");
             tabSwitch = 1; 
         }else{
         	$(".boardContent").animate({
@@ -470,7 +480,6 @@ text-decoration: none;
 /* 컨텐츠 부분 끝 */
 /* 탭 부분 설정시작 */
 .boardTab{
-display: inline-block;
 height: 1000px;
 position: fixed;
 right: 0px;
@@ -498,6 +507,7 @@ top: 0px;
         height: 100%;
         background-color: antiquewhite;
         float: left;
+        display: none;
     }
 .cBox{
 		text-align: center;
@@ -647,7 +657,7 @@ top: 0px;
         </div>
     </div>
     <div class="boardContent">
-    	
+    	<input type="button" value="음악저장배열 확인!!!!" class="soundSave">
     </div>
 </div> 
 <!-- 컨텐츠 끝 -->
