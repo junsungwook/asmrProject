@@ -292,6 +292,11 @@ $(document).ready(function(){
             tabSwitch = 0; 
         }
     });
+    
+    $(".buttonLogin").click(function(){
+    	window.open('login.jsp','Join','width=500, height=500, toolbar=no, menubar=no, scrollbars=no, resizable=no');
+    	
+    });
 })
 </script>
 <style>
@@ -509,8 +514,13 @@ top: 0px;
 	</div>
 	<div class="loginBox">
 		<div class="wrap">
-  			<a href="#" class="button buttonJoin"><b>sign up</b></a>
-  			<a href="#" class="button buttonLogin"><b>log in</b></a>
+			<c:if test="${sessionScope.id !=null }">
+				${sessionScope.id} 환영합니다
+			</c:if>
+			<c:if test="${sessionScope.id ==null }">
+	  			<a href="#" class="button buttonJoin" onClick="window.open('joinform.jsp','Join','width=500, height=500, toolbar=no, menubar=no, scrollbars=no, resizable=no');return false;"><b>sign up</b></a>
+	  			<a href="#" class="button buttonLogin"><b>log in</b></a>
+  			</c:if>
 		</div>
 	</div>
 </div>

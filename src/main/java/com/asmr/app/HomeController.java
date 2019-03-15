@@ -1,19 +1,23 @@
 package com.asmr.app;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.asmr.service.BoardService;
+import com.asmr.model.UserDTO;
+import com.asmr.service.AsmrService;
 
 
 
@@ -24,7 +28,7 @@ import com.asmr.service.BoardService;
 public class HomeController {
 	
 	@Inject
-	private BoardService mService;
+	private AsmrService mService;
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	/**
@@ -37,8 +41,30 @@ public class HomeController {
 	}
 	
 	/* 회원가입창 */
-	@RequestMapping("join")
-	public String join() {
-		return "";
+	/* 회원가입 */
+	@PostMapping("memberInsert")
+	@ResponseBody
+	public void memberInsert(UserDTO user) {
+		System.out.println(user.getId() +" - "+ user.getName() +" - "+ user.getPassword() +" - "+ user.getPhone());
+		mService.userInsert(user);
+	}
+	/* 회원가입시 중복체크 */
+	@GetMapping("idCheck")
+	/* responseBody를 안쓰면 ok.jsp를 찾아간다 */
+	@ResponseBody
+	public String idCheck(@RequestParam("userid")String userid) {
+		return mService.idCheck(userid).trim();
+	}
+
+	/* 로그인 */
+	@PostMapping("login")
+	@ResponseBody
+	public String login(UserDTO user,HttpSession session) {
+		System.out.println(user.getId() +" - "+ user.getPassword());
+		String str = mService.login(user).trim();
+		if(str.equals("ok")) {
+			session.setAttribute("id", user.getId());
+		}
+		return str;
 	}
 }
