@@ -294,7 +294,7 @@ $(document).ready(function(){
     });
     
     $(".buttonLogin").click(function(){
-    	window.open('login.jsp','Join','width=500, height=500, toolbar=no, menubar=no, scrollbars=no, resizable=no');
+    	window.open('login.jsp','login','width=500, height=500, toolbar=no, menubar=no, scrollbars=no, resizable=no');
     	
     });
 })
@@ -362,6 +362,10 @@ text-decoration: none;
 	/* 버튼 css효과 */
 .bar .loginBox .wrap {
 	text-align: center;
+}
+.bar .loginBox .wrap b{
+	color: white;
+	font-size: 1.2em;
 }
 .bar .loginBox .wrap a {
 	-webkit-transition: all 200ms cubic-bezier(0.390, 0.500, 0.150, 1.360);
@@ -514,10 +518,10 @@ top: 0px;
 	</div>
 	<div class="loginBox">
 		<div class="wrap">
-			<c:if test="${sessionScope.id !=null }">
-				${sessionScope.id} 환영합니다
+			<c:if test="${not empty sessionScope.id  }">
+				<b>welcome to Siesta! </b> <a href="logout" class="button buttoLogout"><b>log out</b></a>
 			</c:if>
-			<c:if test="${sessionScope.id ==null }">
+			<c:if test="${empty sessionScope.id }">
 	  			<a href="#" class="button buttonJoin" onClick="window.open('joinform.jsp','Join','width=500, height=500, toolbar=no, menubar=no, scrollbars=no, resizable=no');return false;"><b>sign up</b></a>
 	  			<a href="#" class="button buttonLogin"><b>log in</b></a>
   			</c:if>

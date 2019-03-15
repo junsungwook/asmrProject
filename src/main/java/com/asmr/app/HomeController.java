@@ -3,6 +3,7 @@ package com.asmr.app;
 import java.util.Locale;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -59,12 +60,22 @@ public class HomeController {
 	/* 로그인 */
 	@PostMapping("login")
 	@ResponseBody
-	public String login(UserDTO user,HttpSession session) {
+	public String login(UserDTO user, HttpSession session) {
 		System.out.println(user.getId() +" - "+ user.getPassword());
 		String str = mService.login(user).trim();
 		if(str.equals("ok")) {
+		
 			session.setAttribute("id", user.getId());
+			//System.out.println(session.getAttribute("id")+"");
 		}
 		return str;
+	}
+	/* 로그아웃 */
+	@GetMapping("logout")
+	public String logout(HttpSession session) {
+		
+		//System.out.println(session.getAttribute("id")+"");
+		session.removeAttribute("id");
+		return "home";
 	}
 }

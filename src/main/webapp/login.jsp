@@ -60,10 +60,8 @@ $(document).ready(function(){
             data:params,
             success: function(data){
                 if(data.trim()=="ok"){
-                   alert("Siesta에 로그인 하셨습니다");  
-                   
-                   $(opener.document).find("#loginSes").text($("#id").val());  
-                   opener.location.reload();
+                   alert("Siesta에 로그인 하셨습니다");   
+                   opener.location.href="/app/"
                    self.close();
                    }else{alert("없는 아이디이거나 틀린 비밀번호입니다");}
              },
