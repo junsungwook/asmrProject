@@ -25,14 +25,28 @@ $(document).ready(function(){
 	var arr = new Array(water,bug,cafe,fire,forest,home,library,night,paris,rain,sea,snow,thunder,train,wind);
 	
 	$(".soundSave").click(function(){
+		var str = "";
 		for(var i = 0; i<arr.length; i++){
 			if(!arr[i].paused){
-				alert(i+"번째가 재생중");
+				str += i;
+				str += ",";
 			}
 		}
+		alert("사운드 : " + str);
+		/* 차후에 세션아이디 값을 넣어야함!!!!!!!! */
+		$.ajax({
+		     type:"get",
+		     url:"sounds?sound="+str,
+		     success: function(data){
+		    	 alert("성공");
+		      },
+		      error:function(e){
+		         alert("에러");
+		      }
+		});
 	});
-	
-	
+	/* 음악 배열 인덱스 불러오고 저장할 떄 필수로 세션id값을 같이 보낼 수 있게 수정이 필요하다
+	컨트롤 부분도 세션을 받고 서비스로 보낼 수 있도록 수정 요망	 */
 	$(".volumeBox").click(function(){
 		for(var i = 0; i<arr.length; i++){
 			if(arr[i].muted){
@@ -658,6 +672,7 @@ top: 0px;
     </div>
     <div class="boardContent">
     	<input type="button" value="음악저장배열 확인!!!!" class="soundSave">
+    	<input type="button" value="저장된 배열 확인!!!!" class="soundLoad">
     </div>
 </div> 
 <!-- 컨텐츠 끝 -->

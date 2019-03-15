@@ -24,4 +24,10 @@
 		from asmruser
 		where id=#{id} and password=#{password}
 	</select>
+	
+	<!-- 본인음악조합저장 -->
+	<insert id="soundsave">
+		insert into asmrsave(num,sound,username)
+		values(save_seq.nextval,#{sound},'aaa')
+	</insert>
 </mapper>

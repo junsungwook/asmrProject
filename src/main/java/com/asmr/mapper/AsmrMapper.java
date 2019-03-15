@@ -7,4 +7,5 @@ public interface AsmrMapper {
 	public void userInsert(UserDTO user);
 	public int idCheck(String userid);
 	public int login(UserDTO user);
+	public void soundsave(String sound);
 }

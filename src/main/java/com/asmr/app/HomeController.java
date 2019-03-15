@@ -78,4 +78,14 @@ public class HomeController {
 		session.removeAttribute("id");
 		return "home";
 	}
+	
+	/* 음악배열저장 */
+	@GetMapping("sounds")
+	@ResponseBody
+	public String soundsave(@RequestParam("sound")String sound) {
+		sound = sound.substring(0,sound.length()-1);
+		mService.soundsave(sound);
+		return "1";
+	}
+
 }

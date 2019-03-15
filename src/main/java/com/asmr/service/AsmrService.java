@@ -33,4 +33,8 @@ public class AsmrService {
 		}
 		return check;
 	}
+	public void soundsave(String sound) {
+		System.out.println("서비스 진입성공");
+		mapper.soundsave(sound);
+	}
 }
