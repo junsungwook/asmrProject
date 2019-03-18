@@ -1,10 +1,13 @@
 package com.asmr.app;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.asmr.model.CommentDTO;
 import com.asmr.model.SaveDTO;
 import com.asmr.model.UserDTO;
 import com.asmr.service.AsmrService;
@@ -107,4 +111,42 @@ public class HomeController {
 		}
 	}
 
+	/* 댓글창 불러오기 */
+	//produce 부분을 써야 json형태로 들어간 데이터가 한글화된다. 필터로는 적용이 안됨
+	@RequestMapping(value="C_List",produces="text/plain;charset=UTF-8")
+	@ResponseBody
+	public String C_List() {
+		List<CommentDTO> arr = mService.commentList();
+		JSONArray jarr = new JSONArray();
+		for(CommentDTO cb : arr){
+			JSONObject obj = new JSONObject();
+			obj.put("num",cb.getNum());
+			obj.put("msg",cb.getMsg());
+			obj.put("writer",cb.getWriter());
+			obj.put("regdate",cb.getRegdate());
+			jarr.add(obj);
+		}
+		return jarr.toString();
+	}
+	
+	/* 댓글쓰기 */
+	@RequestMapping(value="C_Insert",produces="text/plain;charset=UTF-8")
+	@ResponseBody
+	public String C_Insert(String msg,String writer) {
+		CommentDTO cd = new CommentDTO();
+		cd.setWriter(writer);
+		cd.setMsg(msg);
+		mService.commentInsert(cd);
+		List<CommentDTO> arr = mService.commentList();
+		JSONArray jarr = new JSONArray();
+		for(CommentDTO cb : arr){
+			JSONObject obj = new JSONObject();
+			obj.put("num",cb.getNum());
+			obj.put("msg",cb.getMsg());
+			obj.put("writer",cb.getWriter());
+			obj.put("regdate",cb.getRegdate());
+			jarr.add(obj);
+		}
+		return jarr.toString();
+	}
 }

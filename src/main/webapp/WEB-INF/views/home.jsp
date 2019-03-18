@@ -3,6 +3,8 @@
 <!-- 웹폰트추가 -->
 <link href="https://fonts.googleapis.com/css?family=Caveat:400,700&amp;subset=cyrillic,latin-ext" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&amp;subset=korean" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
 <html>
 <script  src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
@@ -61,7 +63,7 @@ $(document).ready(function(){
 		    		arr[dataString[i]].play();
 		    		arr[dataString[i]].loop = true;
 		    		$(".picpic").eq(dataString[i]).css("opacity",1.0);
-					$(".slider").eq(dataString[i]).css("display","inline");
+					$(".volumeGra").eq(dataString[i]).css("display","inline");
 		    	}
 		      },
 		      error:function(e){
@@ -343,9 +345,70 @@ $(document).ready(function(){
     	window.open('login.jsp','login','width=500, height=500, toolbar=no, menubar=no, scrollbars=no, resizable=no');
     	
     });
+    
+    /* 댓글 스크립트 */
+    $.ajax({
+		url:"C_List",
+		type:"get",
+		success:function(data){
+			if(data!=null){
+				data = $.parseJSON(data);
+				var htmlStr="";
+				htmlStr +="<table class='table table-striped table-dark'>";
+				for(var i=0; i<data.length;i++){
+					htmlStr +="<tr>";
+					htmlStr +="<td>"+data[i].writer+"</td>";
+					htmlStr +="<td>"+data[i].regdate+"</td>";
+					htmlStr +="<td>"+data[i].msg+"</td>";
+					htmlStr +="</tr>";
+				}
+				htmlStr +="</table>";
+				$("#result").html(htmlStr);	
+			}
+		},
+		error:function(e){
+			alert("error : "+ e);
+		}
+	});
+	$("#msg").keyup(function(){
+		if(event.keyCode==13){
+			$.ajax({
+				url:"C_Insert",
+				type:"post",
+				data:{"msg":$("#msg").val(),"writer":$("#writer").val()},
+				success:function(data){
+					data = $.parseJSON(data);
+					var htmlStr="";
+					htmlStr +="<table class='table table-striped table-dark'>";
+					for(var i=0; i<data.length;i++){
+						htmlStr +="<tr>";
+						htmlStr +="<td>"+data[i].writer+"</td>";
+						htmlStr +="<td>"+data[i].regdate+"</td>";
+						htmlStr +="<td>"+data[i].msg+"</td>";
+						htmlStr +="</tr>";
+					}
+					htmlStr +="</table>";
+					$("#result").html(htmlStr);	
+					$("#msg").val("");
+				},
+				error:function(e){
+					alert("inserterror : "+ e);
+				}
+			});
+		}
+	});
 })
 </script>
 <style>
+input[type="text"], input[type="password"] {
+	height: auto; /* 높이 초기화 */ 
+	line-height: normal; /* line-height 초기화 */ 
+	padding: .8em .5em; /* 여백 설정 */ 
+	border: 0;
+	-webkit-appearance: none;
+	outline-style: none;
+ }
+
 body,html{
 	width: 85%;
 	margin: 0 auto;
@@ -443,7 +506,7 @@ text-decoration: none;
 	font-size: 1.4em;
 	color: white;
 }
-.content .container{
+.content .bigBox{
 	width:100%;
 	height: 100%;
 }
@@ -453,8 +516,9 @@ text-decoration: none;
 .slidecontainer {
   width: 100%;
   margin-top: 20px;
+  padding: 0 25%;
 }
-.slider {
+.volumeGra {
   -webkit-appearance: none;
   width: 40%;
   height: 5px;
@@ -465,11 +529,11 @@ text-decoration: none;
   transition: opacity .2s;
 }
 
-.slider:hover {
+.volumeGra:hover {
   opacity: 1;
 }
 
-.slider::-webkit-slider-thumb {
+.volumeGra::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 20px;
@@ -480,7 +544,7 @@ text-decoration: none;
   
 }
 
-.slider::-moz-range-thumb {
+.volumeGra::-moz-range-thumb {
   width: 20px;
   height: 20px;
   background: #ffffff;
@@ -489,7 +553,7 @@ text-decoration: none;
 }
 /* 슬라이드제작 끝 */
 /* 컨텐츠 row 설정시작 */
-.container{
+.bigBox{
 	padding-top: 40px;
 }
 .row{
@@ -498,17 +562,17 @@ text-decoration: none;
 	text-align: center;
 	margin: 20px 0;
 }
-.row .col1{
+.row .sero1{
 	width:32%;
 	float: left;
 	margin-left: 20px;
 }
-.row .col2{
+.row .sero2{
 	width:32%;
 	float: left;
 	margin : 0 10px;
 }
-.row .col3{
+.row .sero3{
 	width:32%;
 	float: left;
 }
@@ -545,6 +609,7 @@ top: 0px;
         float: left;
         display: none;
         text-align: center;
+        padding-top: 40px;
     }
 	    .boardTab .boardContent p{
 	    	color: white;
@@ -557,6 +622,23 @@ top: 0px;
 	    	text-align: center;
 	    	font-family: "Nanum Gothic", sans-serif;
 	    	color: white;
+	    }
+	    .boardTab .boardContent #result td{
+	    	font-family: "Nanum Gothic", sans-serif;
+	    	color: maroon;
+	    }
+	    .boardTab .boardContent .radius{
+	    	width: 70%;
+	    	height : 38px;
+	    	display:inline-block;
+	    	border-radius: 300px;
+	    	background: white;
+	    	padding-left: 15%;
+	    	font-family: "Nanum Gothic", sans-serif;
+	    }
+	    .boardTab .boardContent .table{
+	    	margin-top:50px;
+	    	width: 60%;
 	    }
 .cBox{
 		text-align: center;
@@ -578,7 +660,7 @@ top: 0px;
 	<div class="loginBox">
 		<div class="wrap">
 			<c:if test="${not empty sessionScope.id  }">
-				<b>welcome to Siesta! </b> <a href="logout" class="button buttoLogout"><b>log out</b></a>
+				<b>welcome to Siesta! </b><br> <a href="logout" class="button buttoLogout"><b>log out</b></a>
 			</c:if>
 			<c:if test="${empty sessionScope.id }">
 	  			<a href="#" class="button buttonJoin" onClick="window.open('joinform.jsp','Join','width=500, height=500, toolbar=no, menubar=no, scrollbars=no, resizable=no');return false;"><b>sign up</b></a>
@@ -596,104 +678,104 @@ top: 0px;
 			Mix different sounds and create your perfect environment.
 		</h1>
 	</div>
-	<div class="container">
+	<div class="bigBox">
 		<div class="row">
-			<div class="col1 col">
+			<div class="sero1 sero">
 				<img src="resources/icon/bug.png" id="bug" class="picpic" alt="풀벌레" style="opacity:0.4;">
 				<div class="slidecontainer">
-				  <input type="range"  min="0" max="1" step="0.1" value="0.5" class="slider bugS" id="myRange" style="display: none;">
+				  <input type="range"  min="0" max="1" step="0.1" value="0.5" class="volumeGra bugS" id="myRange" style="display: none;">
 				</div>
 			</div>
-			<div class="col2 col">
+			<div class="sero2 sero">
 				<img src="resources/icon/fire.png" id="fire" class="picpic" alt="모닥불" style="opacity:0.4;">
 				<div class="slidecontainer">
-				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="slider fireS" id="myRange" style="display: none;">
+				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="volumeGra fireS" id="myRange" style="display: none;">
 				</div>
 			</div>
-			<div class="col3 col">
+			<div class="sero3 sero">
 				<img src="resources/icon/forest.png" id="forest" class="picpic" alt="숲" style="opacity:0.4;">
 				<div class="slidecontainer">
-				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="slider forestS" id="myRange" style="display: none;">
+				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="volumeGra forestS" id="myRange" style="display: none;">
 				</div>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col1 col">
+			<div class="sero1 sero">
 				<img src="resources/icon/home.png" id="home" class="picpic" alt="집" style="opacity:0.4;">	
 				<div class="slidecontainer">
-				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="slider homeS" id="myRange" style="display: none;">
+				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="volumeGra homeS" id="myRange" style="display: none;">
 				</div>
 			</div>
-			<div class="col2 col">
+			<div class="sero2 sero">
 				<img src="resources/icon/library.png" id="library" class="picpic" alt="도서관" style="opacity:0.4;">
 				<div class="slidecontainer">
-				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="slider libraryS" id="myRange" style="display: none;">
+				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="volumeGra libraryS" id="myRange" style="display: none;">
 				</div>
 			</div>
-			<div class="col3 col">
+			<div class="sero3 sero">
 				<img src="resources/icon/night.png" id="night" class="picpic" alt="밤" style="opacity:0.4;">	
 				<div class="slidecontainer">
-				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="slider nightS" id="myRange" style="display: none;">
+				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="volumeGra nightS" id="myRange" style="display: none;">
 				</div>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col1 col">
+			<div class="sero1 sero">
 				<img src="resources/icon/city.png" id="paris" class="picpic" alt="도시" style="opacity:0.4;">	
 				<div class="slidecontainer">
-				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="slider cityS" id="myRange" style="display: none;">
+				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="volumeGra cityS" id="myRange" style="display: none;">
 				</div>
 			</div>
-			<div class="col2 col">
+			<div class="sero2 sero">
 				<img src="resources/icon/rain.png" id="rain" class="picpic" alt="비" style="opacity:0.4;">
 				<div class="slidecontainer">
-				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="slider rainS" id="myRange" style="display: none;">
+				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="volumeGra rainS" id="myRange" style="display: none;">
 				</div>
 			</div>
-			<div class="col3 col">
+			<div class="sero3 sero">
 				<img src="resources/icon/sea.png" id="sea" class="picpic" alt="바다" style="opacity:0.4;">	
 				<div class="slidecontainer">
-				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="slider seaS" id="myRange" style="display: none;">
+				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="volumeGra seaS" id="myRange" style="display: none;">
 				</div>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col1 col">
+			<div class="sero1 sero">
 				<img src="resources/icon/snow.png" id="snow" class="picpic" alt="눈" style="opacity:0.4;">	
 				<div class="slidecontainer">
-				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="slider snowS" id="myRange" style="display: none;">
+				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="volumeGra snowS" id="myRange" style="display: none;">
 				</div>
 			</div>
-			<div class="col2 col">
+			<div class="sero2 sero">
 				<img src="resources/icon/thunder.png" id="thunder" class="picpic" alt="번개" style="opacity:0.4;">
 				<div class="slidecontainer">
-				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="slider thunderS" id="myRange" style="display: none;">
+				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="volumeGra thunderS" id="myRange" style="display: none;">
 				</div>
 			</div>
-			<div class="col3 col">
+			<div class="sero3 sero">
 				<img src="resources/icon/train.png" id="train" class="picpic" alt="기차" style="opacity:0.4;">	
 				<div class="slidecontainer">
-				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="slider trainS" id="myRange" style="display: none;">
+				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="volumeGra trainS" id="myRange" style="display: none;">
 				</div>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col1 col">
+			<div class="sero1 sero">
 				<img src="resources/icon/wind.png" id="wind" class="picpic" alt="바람" style="opacity:0.4;">		
 				<div class="slidecontainer">
-				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="slider windS" id="myRange" style="display: none;">
+				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="volumeGra windS" id="myRange" style="display: none;">
 				</div>
 			</div>
-			<div class="col2 col">
+			<div class="sero2 sero">
 				<img src="resources/icon/water.png" id="water" class="picpic" alt="물" style="opacity:0.4;">
 				<div class="slidecontainer">
-				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="slider waterS" id="myRange" style="display: none;">
+				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="volumeGra waterS" id="myRange" style="display: none;">
 				</div>
 			</div>
-			<div class="col3 col">
+			<div class="sero3 sero">
 				<img src="resources/icon/cafe.png" id="cafe" class="picpic" alt="카페" style="opacity:0.4;">	
 				<div class="slidecontainer">
-				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="slider cafeS" id="myRange" style="display: none;">
+				  <input type="range" min="0" max="1" step="0.1" value="0.5" class="volumeGra cafeS" id="myRange" style="display: none;">
 				</div>
 			</div>
 		</div>		
@@ -714,6 +796,17 @@ top: 0px;
     <c:if test="${empty sessionScope.id }">
 	  	<p>please login to Siesta</p>
   	</c:if>
+  	
+  	<!-- 댓글창 시작 -->
+  	<c:if test="${not empty sessionScope.id  }">
+  	<div id="result" align="center">
+	</div>
+	<input type="hidden" value="${sessionScope.id }" name="writer" id="writer" >
+	
+	<div class="radius">
+		<input type="text" id="msg" class="form-control" style="width:400px;" placeholder="please enter your comment!!!">
+	</div>
+	</c:if>
     </div>
 </div> 
 <!-- 컨텐츠 끝 -->

@@ -52,4 +52,15 @@
 		where username = #{username}
 	</select>
 
+	<!-- 댓글창 불러오기 -->
+	<select id="commentList" resultType="com.asmr.model.CommentDTO">
+		select *
+		from asmrcomment
+	</select>
+	
+	<!-- 댓글쓰기 -->
+	<insert id="commentInsert">
+		insert into asmrcomment(num,writer,regdate,msg)
+		values(com_seq.nextval,#{writer},sysdate,#{msg})
+	</insert>
 </mapper>

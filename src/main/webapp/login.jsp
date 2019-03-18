@@ -89,7 +89,7 @@ $(document).ready(function(){
 				</tr>
 				<tr>
 					<td>PASSWORD</td>
-					<td colspan=2 class="col-xs-3"><input type="password" id="password"	name="password" class="form-control">
+					<td class="col-xs-3"><input type="password" id="password"	name="password" class="form-control">
 					<span id = 'password_valid_span'></span></td>
 				</tr>
 				<tr>

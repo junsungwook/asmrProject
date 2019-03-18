@@ -1,9 +1,12 @@
 package com.asmr.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.asmr.mapper.AsmrMapper;
+import com.asmr.model.CommentDTO;
 import com.asmr.model.SaveDTO;
 import com.asmr.model.UserDTO;
 
@@ -48,5 +51,14 @@ public class AsmrService {
 	public SaveDTO soundLoad(String username) {
 		System.out.println("로드 서비스 진입성공----------");
 		return mapper.soundLoad(username);
+	}
+	
+	public List<CommentDTO> commentList() {
+		List<CommentDTO> arr = mapper.commentList();
+		return arr;
+	}
+	
+	public void commentInsert(CommentDTO co) {
+		mapper.commentInsert(co);
 	}
 }
