@@ -625,7 +625,7 @@ top: 0px;
 	    }
 	    .boardTab .boardContent #result td{
 	    	font-family: "Nanum Gothic", sans-serif;
-	    	color: maroon;
+	    	color: black;
 	    }
 	    .boardTab .boardContent .radius{
 	    	width: 70%;
@@ -804,7 +804,7 @@ top: 0px;
 	<input type="hidden" value="${sessionScope.id }" name="writer" id="writer" >
 	
 	<div class="radius">
-		<input type="text" id="msg" class="form-control" style="width:400px;" placeholder="please enter your comment!!!">
+		<input type="text" id="msg" class="form-control" style="width:400px;" placeholder="&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;please enter your comment!!!">
 	</div>
 	</c:if>
     </div>
