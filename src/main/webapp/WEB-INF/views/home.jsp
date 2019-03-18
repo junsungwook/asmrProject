@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!-- 웹폰트추가 -->
 <link href="https://fonts.googleapis.com/css?family=Caveat:400,700&amp;subset=cyrillic,latin-ext" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&amp;subset=korean" rel="stylesheet">
 <html>
 <script  src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
@@ -22,8 +23,9 @@ $(document).ready(function(){
 	var train = new Audio('resources/music/train.mp3');
 	var wind = new Audio('resources/music/wind.mp3');
 	
-	var arr = new Array(water,bug,cafe,fire,forest,home,library,night,paris,rain,sea,snow,thunder,train,wind);
+	var arr = new Array(bug,fire,forest,home,library,night,paris,rain,sea,snow,thunder,train,wind,water,cafe);
 	
+	/* 음악배열저장 */
 	$(".soundSave").click(function(){
 		var str = "";
 		for(var i = 0; i<arr.length; i++){
@@ -32,21 +34,41 @@ $(document).ready(function(){
 				str += ",";
 			}
 		}
-		alert("사운드 : " + str);
-		/* 차후에 세션아이디 값을 넣어야함!!!!!!!! */
+		alert("사운드 배열값: " + str);
 		$.ajax({
 		     type:"get",
 		     url:"sounds?sound="+str,
 		     success: function(data){
-		    	 alert("성공");
+		    	 alert("저장하셨습니다. 다음 번 로그인부터 불러올 수 있습니다");
 		      },
 		      error:function(e){
-		         alert("에러");
+		         alert("다시 시도해주세요");
 		      }
 		});
 	});
-	/* 음악 배열 인덱스 불러오고 저장할 떄 필수로 세션id값을 같이 보낼 수 있게 수정이 필요하다
-	컨트롤 부분도 세션을 받고 서비스로 보낼 수 있도록 수정 요망	 */
+	/* 음악배열불러오기 */
+	$(".soundLoad").click(function(){
+		$.ajax({
+		     type:"get",
+		     url:"load",
+		     success: function(data){
+		    	 if(data==null){
+		    		 alert("저장된 조합이 없습니다");
+		    		 return false;
+		    	 }
+		    	var dataString = data.split(',');
+		    	for(var i in dataString){
+		    		arr[dataString[i]].play();
+		    		arr[dataString[i]].loop = true;
+		    		$(".picpic").eq(dataString[i]).css("opacity",1.0);
+					$(".slider").eq(dataString[i]).css("display","inline");
+		    	}
+		      },
+		      error:function(e){
+		         alert("오류");
+		      }
+		});
+	});
 	$(".volumeBox").click(function(){
 		for(var i = 0; i<arr.length; i++){
 			if(arr[i].muted){
@@ -507,7 +529,7 @@ top: 0px;
             .boardTab .tabButtonArea .tabButton{
             width: 100%;
             height: 80px;
-            background-color: antiquewhite;
+            background-color: #CCCCFF;
             border-radius:  30px 0px 0px 30px;
             font-size: 0.7em;
             color: white;
@@ -519,13 +541,26 @@ top: 0px;
     .boardTab .boardContent{
         width: 0%;
         height: 100%;
-        background-color: antiquewhite;
+        background-color: #CCCCFF;
         float: left;
         display: none;
+        text-align: center;
     }
+	    .boardTab .boardContent p{
+	    	color: white;
+	    	font-size: 1.5em;
+	    	text-align: center;
+	    }
+	    .boardTab .boardContent .loginon{
+	    	color: olive;
+	    	font-size: 1.2em;
+	    	text-align: center;
+	    	font-family: "Nanum Gothic", sans-serif;
+	    	color: white;
+	    }
 .cBox{
 		text-align: center;
-	}
+}
 /* 탭 부분 설정끝 */
 </style>
 <head>
@@ -671,8 +706,14 @@ top: 0px;
         </div>
     </div>
     <div class="boardContent">
-    	<input type="button" value="음악저장배열 확인!!!!" class="soundSave">
-    	<input type="button" value="저장된 배열 확인!!!!" class="soundLoad">
+    <c:if test="${not empty sessionScope.id  }">
+    	<p class="loginon">본인만의 조합을 저장하고 불러오세요</p>
+    	<img src="resources/icon/save.png" class="soundSave" alt="음악저장">&emsp;&emsp;&emsp;
+    	<img src="resources/icon/listen.png" class="soundLoad" alt="음악불러오기">
+    </c:if>
+    <c:if test="${empty sessionScope.id }">
+	  	<p>please login to Siesta</p>
+  	</c:if>
     </div>
 </div> 
 <!-- 컨텐츠 끝 -->

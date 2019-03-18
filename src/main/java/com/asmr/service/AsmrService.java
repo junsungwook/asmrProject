@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.asmr.mapper.AsmrMapper;
+import com.asmr.model.SaveDTO;
 import com.asmr.model.UserDTO;
 
 @Service
@@ -24,7 +25,7 @@ public class AsmrService {
 		return check;
 	}
 	public String login(UserDTO user) {
-		System.out.println("서비스 진입성공");
+		System.out.println("로그인 서비스 진입성공-----------");
 		String check = "no";
 		int size = mapper.login(user);
 		System.out.println("size = "+size);
@@ -33,8 +34,19 @@ public class AsmrService {
 		}
 		return check;
 	}
-	public void soundsave(String sound) {
-		System.out.println("서비스 진입성공");
-		mapper.soundsave(sound);
+	public void soundsave(SaveDTO save) {
+		System.out.println("저장 서비스 진입성공-----------");
+		String name = save.getUsername();
+		int count = mapper.nameCheck(name);
+		if(count==0) {
+			mapper.soundsave(save);
+		}
+		else {
+			mapper.soundUpdate(save);
+		}
+	}
+	public SaveDTO soundLoad(String username) {
+		System.out.println("로드 서비스 진입성공----------");
+		return mapper.soundLoad(username);
 	}
 }

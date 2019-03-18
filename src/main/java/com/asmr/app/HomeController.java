@@ -3,7 +3,6 @@ package com.asmr.app;
 import java.util.Locale;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.asmr.model.SaveDTO;
 import com.asmr.model.UserDTO;
 import com.asmr.service.AsmrService;
 
@@ -82,10 +82,29 @@ public class HomeController {
 	/* 음악배열저장 */
 	@GetMapping("sounds")
 	@ResponseBody
-	public String soundsave(@RequestParam("sound")String sound) {
+	public String soundsave(@RequestParam("sound")String sound,HttpSession session) {
 		sound = sound.substring(0,sound.length()-1);
-		mService.soundsave(sound);
+		System.out.println("컨트롤러 사운드 :" + sound);
+		String username = (String) session.getAttribute("id");
+		SaveDTO save = new SaveDTO();
+		save.setSound(sound);
+		save.setUsername(username);
+		mService.soundsave(save);
 		return "1";
+	}
+	
+	/* 음악배열불러오기 */
+	@GetMapping("load")
+	@ResponseBody
+	public String soundLoad(HttpSession session) {
+		String username = (String) session.getAttribute("id");
+		SaveDTO loaded = mService.soundLoad(username);
+		if(loaded==null) {
+			return "저장된 값이 없습니다";
+		}
+		else {
+			return loaded.getSound();
+		}
 	}
 
 }

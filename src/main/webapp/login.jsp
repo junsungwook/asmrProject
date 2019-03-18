@@ -95,7 +95,7 @@ $(document).ready(function(){
 				<tr>
 					<td></td>
 					<td colspan=2><input type="button" id="login_bt" value="확인" class="btn btn-default"> &nbsp;&nbsp; 
-					<input type="button" value="취소" class="btn btn-default"></td>
+					<input type="button" value="취소" onclick="window.close()" class="btn btn-default"></td>
 				</tr>
 			</table>
 		</div>

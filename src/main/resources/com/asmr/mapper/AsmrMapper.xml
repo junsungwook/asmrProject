@@ -28,6 +28,28 @@
 	<!-- 본인음악조합저장 -->
 	<insert id="soundsave">
 		insert into asmrsave(num,sound,username)
-		values(save_seq.nextval,#{sound},'aaa')
+		values(save_seq.nextval,#{sound},#{username})
 	</insert>
+	
+	<!-- 저장 전 동일 이름 있는지 체크 -->
+	<select id="nameCheck" resultType="Integer">
+		select count(*)
+		from asmrsave
+		where username = #{name}
+	</select>
+	
+	<!-- 저장된 파일 있을 시 수정으로 작동 -->
+	<update id="soundUpdate">
+		update asmrsave
+		set sound = #{sound}
+		where username = #{username}
+	</update>
+	
+	<!-- 저장된 배열 불러오기 -->
+	<select id="soundLoad" resultType="com.asmr.model.SaveDTO">
+		select *
+		from asmrsave
+		where username = #{username}
+	</select>
+
 </mapper>
