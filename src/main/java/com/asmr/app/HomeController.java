@@ -179,4 +179,13 @@ public class HomeController {
 		}
 		return jarr.toString();
 	}
+	
+	/* 추천수 올리기 */
+	@GetMapping("votedUp")
+	@ResponseBody
+	public String votedUp(@RequestParam("username")String username) {
+		mService.votedUp(username);
+		return "1";
+	}
+
 }

@@ -18,4 +18,5 @@ public interface AsmrMapper {
 	public List<CommentDTO> commentList();
 	public void commentInsert(CommentDTO co);
 	public List<SaveDTO> colaboList();
+	public void votedUp(String username);
 }

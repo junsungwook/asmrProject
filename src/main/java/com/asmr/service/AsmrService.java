@@ -66,4 +66,8 @@ public class AsmrService {
 		List<SaveDTO> arr = mapper.colaboList();
 		return arr;
 	}
+	
+	public void votedUp(String username) {
+		mapper.votedUp(username);
+	}
 }

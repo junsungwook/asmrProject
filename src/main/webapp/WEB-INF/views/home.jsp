@@ -432,6 +432,18 @@ $(document).ready(function(){
 						$(".volumeGra").eq(i).css("display","none");
 			 		}
 					var username = $("td:eq(0)",this).text();
+					
+					/* 수정중 */
+					$.ajax({
+						type:"get",
+					     url:"votedUp?username="+username,
+					     success: function(data){
+					    	
+					      },
+					      error:function(e){
+					         alert("오류");
+					      }
+					});
 					$.ajax({
 					     type:"get",
 					     url:"loadColabo?username="+username,
@@ -933,9 +945,6 @@ top: 0px;
 			<p class="loginon">다른 사용자들의 조합을 들어보고 추천하세요</p>
 			<div id="colabos">
 			</div>
-			<script>
-		
-			</script>
 		</c:if>
     </div>
 </div> 
