@@ -5,8 +5,10 @@
 <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&amp;subset=korean" rel="stylesheet">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
+
 <html>
 <script  src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script  src="https://use.fontawesome.com/7ad89d9866.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 	var water = new Audio('resources/music/water.mp3');
@@ -47,7 +49,7 @@ $(document).ready(function(){
 		     url:"sounds?sound="+str+"&memo="+memo,
 		     success: function(data){
 		    	 alert("저장하셨습니다. 다음 번 로그인부터 불러올 수 있습니다");
-		    	 getColabo();
+		    	 location.reload();
 		      },
 		      error:function(e){
 		         alert("다시 시도해주세요");
@@ -405,12 +407,6 @@ $(document).ready(function(){
 	});
 	
 	/* 조합리스트 불러오기 */
-	getColabo();
-	
-
-})
-
-function getColabo(){
 	$.ajax({
 		url:"colaboList",
 		type:"get",
@@ -424,12 +420,34 @@ function getColabo(){
 					htmlStr +="<td>"+data[i].username+"</td>";
 					htmlStr +="<td>"+data[i].memo+"</td>";
 					htmlStr +="<td>"+data[i].voted+"</td>";
+					htmlStr +="<td><button class='btn-secondary like-review'><i class='fa fa-heart' aria-hidden='true'></i> Like</button></td>";
 					htmlStr +="</tr>";
 				}
 				htmlStr +="</table>";
 				$("#colabos").html(htmlStr);	
 				$("#colabos table tbody").on("click","tr",function(){
-					$("td:eq(0)",this).text();
+					for(var i = 0; i<arr.length; i++){
+			    		arr[i].pause();
+			    		$(".picpic").eq(i).css("opacity",0.4);
+						$(".volumeGra").eq(i).css("display","none");
+			 		}
+					var username = $("td:eq(0)",this).text();
+					$.ajax({
+					     type:"get",
+					     url:"loadColabo?username="+username,
+					     success: function(data){
+					    	var dataString = data.split(',');
+					    	for(var i in dataString){
+					    		arr[dataString[i]].play();
+					    		arr[dataString[i]].loop = true;
+					    		$(".picpic").eq(dataString[i]).css("opacity",1.0);
+								$(".volumeGra").eq(dataString[i]).css("display","inline");
+					    	};
+					      },
+					      error:function(e){
+					         alert("오류");
+					      }
+					});
 				});
 			}
 		},
@@ -437,9 +455,15 @@ function getColabo(){
 			alert("에러났다");
 		}
 	});
-	
-	
-}
+
+	$(function(){
+	    $(document).on('click', '.like-review', function(e) {
+	        $(this).html('<i class="fa fa-heart" aria-hidden="true"></i> You liked this');
+	        $(this).children('.fa-heart').addClass('animate-like');
+	    });
+	});
+})
+
 </script>
 <style>
 input[type="text"]{
@@ -705,8 +729,41 @@ top: 0px;
 	    	width: 100%;
 	    	font-family: "Nanum Gothic", sans-serif;
 	    }
-	
-		
+	    .boardTab .boardContent #colabos .table td{
+	    	text-align: center;	
+	    }
+		.btn-secondary {
+			display: inline-block;
+			text-align: center;
+			background: #ed2553;
+			border-radius: 3px;
+			box-shadow: 0 10px 20px -8px rgb(240, 75, 113);
+			font-size: 18px;
+			font-family: 'Caveat', cursive;
+			cursor: pointer;
+			border: none;
+			outline: none;
+			color: #ffffff;
+			text-decoration: none;
+			-webkit-transition: 0.3s ease;
+			transition: 0.3s ease;
+		}
+		.btn-secondary:hover {
+		      transform: translateY(-3px);
+		}
+		.btn-secondary .fa {
+		      margin-right: 5px;
+		}
+		.animate-like {
+		    animation-name: likeAnimation;
+		    animation-iteration-count: 1;
+		    animation-fill-mode: forwards;
+		    animation-duration: 0.65s;
+		}
+		@keyframes likeAnimation {
+		  0%   { transform: scale(30); }
+		  100% { transform: scale(1); }
+		}
 .cBox{
 		text-align: center;
 }

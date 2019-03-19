@@ -111,7 +111,18 @@ public class HomeController {
 			return loaded.getSound();
 		}
 	}
-
+	/* 음악배열불러오기(유저네임 넣어서) */
+	@GetMapping("loadColabo")
+	@ResponseBody
+	public String loadColabo(@RequestParam("username")String username,HttpSession session) {
+		SaveDTO loaded = mService.soundLoad(username);
+		if(loaded==null) {
+			return "저장된 값이 없습니다";
+		}
+		else {
+			return loaded.getSound();
+		}
+	}
 	/* 댓글창 불러오기 */
 	//produce 부분을 써야 json형태로 들어간 데이터가 한글화된다. 필터로는 적용이 안됨
 	@RequestMapping(value="C_List",produces="text/plain;charset=UTF-8")
