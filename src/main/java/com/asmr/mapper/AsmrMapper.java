@@ -17,4 +17,5 @@ public interface AsmrMapper {
 	public SaveDTO soundLoad(String username);
 	public List<CommentDTO> commentList();
 	public void commentInsert(CommentDTO co);
+	public List<SaveDTO> colaboList();
 }

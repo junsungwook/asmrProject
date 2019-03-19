@@ -29,19 +29,25 @@ $(document).ready(function(){
 	
 	/* 음악배열저장 */
 	$(".soundSave").click(function(){
+		var memo = $("#memo").val();
+		if(memo==""){
+			alert("please enter your colaboName!");
+			return false;
+		}
 		var str = "";
+		
 		for(var i = 0; i<arr.length; i++){
 			if(!arr[i].paused){
 				str += i;
 				str += ",";
 			}
 		}
-		alert("사운드 배열값: " + str);
 		$.ajax({
 		     type:"get",
-		     url:"sounds?sound="+str,
+		     url:"sounds?sound="+str+"&memo="+memo,
 		     success: function(data){
 		    	 alert("저장하셨습니다. 다음 번 로그인부터 불러올 수 있습니다");
+		    	 getColabo();
 		      },
 		      error:function(e){
 		         alert("다시 시도해주세요");
@@ -383,8 +389,8 @@ $(document).ready(function(){
 					for(var i=0; i<data.length;i++){
 						htmlStr +="<tr>";
 						htmlStr +="<td>"+data[i].writer+"</td>";
-						htmlStr +="<td>"+data[i].regdate+"</td>";
 						htmlStr +="<td>"+data[i].msg+"</td>";
+						htmlStr +="<td>"+data[i].regdate+"</td>";
 						htmlStr +="</tr>";
 					}
 					htmlStr +="</table>";
@@ -397,10 +403,46 @@ $(document).ready(function(){
 			});
 		}
 	});
+	
+	/* 조합리스트 불러오기 */
+	getColabo();
+	
+
 })
+
+function getColabo(){
+	$.ajax({
+		url:"colaboList",
+		type:"get",
+		success:function(data){
+			if(data!=null){
+				data = $.parseJSON(data);
+				var htmlStr="";
+				htmlStr +="<table class='table table-striped table-dark'>";
+				for(var i=0; i<data.length;i++){
+					htmlStr +="<tr>";
+					htmlStr +="<td>"+data[i].username+"</td>";
+					htmlStr +="<td>"+data[i].memo+"</td>";
+					htmlStr +="<td>"+data[i].voted+"</td>";
+					htmlStr +="</tr>";
+				}
+				htmlStr +="</table>";
+				$("#colabos").html(htmlStr);	
+				$("#colabos table tbody").on("click","tr",function(){
+					$("td:eq(0)",this).text();
+				});
+			}
+		},
+		error:function(e){
+			alert("에러났다");
+		}
+	});
+	
+	
+}
 </script>
 <style>
-input[type="text"], input[type="password"] {
+input[type="text"]{
 	height: auto; /* 높이 초기화 */ 
 	line-height: normal; /* line-height 초기화 */ 
 	padding: .8em .5em; /* 여백 설정 */ 
@@ -408,7 +450,9 @@ input[type="text"], input[type="password"] {
 	-webkit-appearance: none;
 	outline-style: none;
  }
-
+input[type="text"]:focus {
+	box-shadow: none
+}
 body,html{
 	width: 85%;
 	margin: 0 auto;
@@ -615,6 +659,7 @@ top: 0px;
 	    	color: white;
 	    	font-size: 1.5em;
 	    	text-align: center;
+	    	font-family: "Nanum Gothic", sans-serif;
 	    }
 	    .boardTab .boardContent .loginon{
 	    	color: olive;
@@ -636,10 +681,32 @@ top: 0px;
 	    	padding-left: 15%;
 	    	font-family: "Nanum Gothic", sans-serif;
 	    }
+	     .boardTab .boardContent .memoBox{
+	    	width: 160px;
+	    	height : 30px;
+	    	display:inline-block;
+	    	border-radius: 40px;
+	    	background: white;
+	    	font-family: "Nanum Gothic", sans-serif;
+	    }
 	    .boardTab .boardContent .table{
-	    	margin-top:50px;
+	    	margin-top:20px;
 	    	width: 60%;
 	    }
+	    .boardTab .boardContent #colabos{
+	    	display: inline-block;
+	    	width: 60%;
+	    	margin: 0 auto;
+	    	height:40%;
+	    	overflow-x:hidden; 
+ 			overflow-y:auto;
+	    }
+	    .boardTab .boardContent #colabos .table{
+	    	width: 100%;
+	    	font-family: "Nanum Gothic", sans-serif;
+	    }
+	
+		
 .cBox{
 		text-align: center;
 }
@@ -788,25 +855,31 @@ top: 0px;
         </div>
     </div>
     <div class="boardContent">
-    <c:if test="${not empty sessionScope.id  }">
-    	<p class="loginon">본인만의 조합을 저장하고 불러오세요</p>
-    	<img src="resources/icon/save.png" class="soundSave" alt="음악저장">&emsp;&emsp;&emsp;
-    	<img src="resources/icon/listen.png" class="soundLoad" alt="음악불러오기">
-    </c:if>
-    <c:if test="${empty sessionScope.id }">
-	  	<p>please login to Siesta</p>
-  	</c:if>
-  	
-  	<!-- 댓글창 시작 -->
-  	<c:if test="${not empty sessionScope.id  }">
-  	<div id="result" align="center">
-	</div>
-	<input type="hidden" value="${sessionScope.id }" name="writer" id="writer" >
-	
-	<div class="radius">
-		<input type="text" id="msg" class="form-control" style="width:400px;" placeholder="&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;please enter your comment!!!">
-	</div>
-	</c:if>
+    	<c:if test="${empty sessionScope.id }">
+		  	<p>please login to Siesta</p>
+	  	</c:if>
+	    <c:if test="${not empty sessionScope.id  }">
+	    	<p class="loginon">본인만의 조합을 저장하고 불러오세요</p>
+	    	<div class="memoBox">
+				<input type="text" id="memo" name="memo" class="form-control" placeholder="enter your colaboName!">
+			</div>&emsp;&emsp;
+	    	<img src="resources/icon/save.png" class="soundSave" alt="음악저장">&emsp;
+	    	<img src="resources/icon/listen.png" class="soundLoad" alt="음악불러오기">
+	   
+	  	<!-- 댓글창 시작 -->
+		  	<div id="result" align="center"></div>
+			<input type="hidden" value="${sessionScope.id }" name="writer" id="writer" >
+			<div class="radius">
+				<input type="text" id="msg" class="form-control" style="width:400px;" placeholder="&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;please enter your comment!!!">
+			</div>
+			<br><br><br>
+			<p class="loginon">다른 사용자들의 조합을 들어보고 추천하세요</p>
+			<div id="colabos">
+			</div>
+			<script>
+		
+			</script>
+		</c:if>
     </div>
 </div> 
 <!-- 컨텐츠 끝 -->

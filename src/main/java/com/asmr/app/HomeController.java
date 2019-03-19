@@ -86,13 +86,14 @@ public class HomeController {
 	/* 음악배열저장 */
 	@GetMapping("sounds")
 	@ResponseBody
-	public String soundsave(@RequestParam("sound")String sound,HttpSession session) {
+	public String soundsave(@RequestParam("sound")String sound,@RequestParam("memo")String memo,HttpSession session) {
 		sound = sound.substring(0,sound.length()-1);
 		System.out.println("컨트롤러 사운드 :" + sound);
 		String username = (String) session.getAttribute("id");
 		SaveDTO save = new SaveDTO();
 		save.setSound(sound);
 		save.setUsername(username);
+		save.setMemo(memo);
 		mService.soundsave(save);
 		return "1";
 	}
@@ -145,6 +146,24 @@ public class HomeController {
 			obj.put("msg",cb.getMsg());
 			obj.put("writer",cb.getWriter());
 			obj.put("regdate",cb.getRegdate());
+			jarr.add(obj);
+		}
+		return jarr.toString();
+	}
+	
+	
+	/* 콜라보 불러오기 */
+	//produce 부분을 써야 json형태로 들어간 데이터가 한글화된다. 필터로는 적용이 안됨
+	@RequestMapping(value="colaboList",produces="text/plain;charset=UTF-8")
+	@ResponseBody
+	public String colaboList() {
+		List<SaveDTO> arr = mService.colaboList();
+		JSONArray jarr = new JSONArray();
+		for(SaveDTO cb : arr){
+			JSONObject obj = new JSONObject();
+			obj.put("username",cb.getUsername());
+			obj.put("memo",cb.getMemo());
+			obj.put("voted",cb.getVoted());
 			jarr.add(obj);
 		}
 		return jarr.toString();

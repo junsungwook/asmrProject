@@ -27,8 +27,8 @@
 	
 	<!-- 본인음악조합저장 -->
 	<insert id="soundsave">
-		insert into asmrsave(num,sound,username)
-		values(save_seq.nextval,#{sound},#{username})
+		insert into asmrsave(num,sound,username,memo,voted)
+		values(save_seq.nextval,#{sound},#{username},#{memo},0)
 	</insert>
 	
 	<!-- 저장 전 동일 이름 있는지 체크 -->
@@ -41,7 +41,10 @@
 	<!-- 저장된 파일 있을 시 수정으로 작동 -->
 	<update id="soundUpdate">
 		update asmrsave
-		set sound = #{sound}
+		set 
+			sound = #{sound},
+			memo = #{memo},
+			voted = 0
 		where username = #{username}
 	</update>
 	
@@ -52,15 +55,24 @@
 		where username = #{username}
 	</select>
 
-	<!-- 댓글창 불러오기 -->
+	<!-- 코멘트창 불러오기 -->
 	<select id="commentList" resultType="com.asmr.model.CommentDTO">
 		select *
-		from asmrcomment
+		from (select rownum rn,aa.*
+			  from (select * from asmrcomment order by num desc)aa)
+		where rn between 1 and 6
 	</select>
 	
-	<!-- 댓글쓰기 -->
+	<!-- 코멘트쓰기 -->
 	<insert id="commentInsert">
 		insert into asmrcomment(num,writer,regdate,msg)
 		values(com_seq.nextval,#{writer},sysdate,#{msg})
 	</insert>
+	
+	<!-- 콜라보리스트 불러오기 -->
+	<select id="colaboList" resultType="com.asmr.model.SaveDTO">
+		select *
+		from asmrsave
+		order by voted desc
+	</select>
 </mapper>

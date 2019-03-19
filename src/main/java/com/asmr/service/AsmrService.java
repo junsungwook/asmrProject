@@ -61,4 +61,9 @@ public class AsmrService {
 	public void commentInsert(CommentDTO co) {
 		mapper.commentInsert(co);
 	}
+	
+	public List<SaveDTO> colaboList(){
+		List<SaveDTO> arr = mapper.colaboList();
+		return arr;
+	}
 }

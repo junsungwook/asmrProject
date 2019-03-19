@@ -1,8 +1,20 @@
 package com.asmr.model;
 
 public class SaveDTO {
-	int num;
-	String sound,username;
+	int num,voted;
+	String sound,username,memo;
+	public int getVoted() {
+		return voted;
+	}
+	public void setVoted(int voted) {
+		this.voted = voted;
+	}
+	public String getMemo() {
+		return memo;
+	}
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
 	public int getNum() {
 		return num;
 	}
