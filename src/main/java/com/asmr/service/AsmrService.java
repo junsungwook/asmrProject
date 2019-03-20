@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.asmr.mapper.AsmrMapper;
+import com.asmr.model.AsmrVoted;
 import com.asmr.model.CommentDTO;
 import com.asmr.model.SaveDTO;
 import com.asmr.model.UserDTO;
@@ -67,7 +68,25 @@ public class AsmrService {
 		return arr;
 	}
 	
-	public void votedUp(String username) {
-		mapper.votedUp(username);
+	public void votedUp(String num) {
+		mapper.votedUp(num);
+	}
+	public void votedDown(String num) {
+		mapper.votedDown(num);
+	}
+	public String votedCheck(AsmrVoted vote) {
+		int count = mapper.votedCheck(vote);
+		if(count==0) {
+			return "ok";
+		}else {
+			return "no";
+		}
+	}
+	
+	public void votedSave(AsmrVoted vote) {
+		mapper.votedSave(vote);
+	}
+	public void votedDelete(AsmrVoted vote) {
+		mapper.votedDelete(vote);
 	}
 }

@@ -2,6 +2,7 @@ package com.asmr.mapper;
 
 import java.util.List;
 
+import com.asmr.model.AsmrVoted;
 import com.asmr.model.CommentDTO;
 import com.asmr.model.SaveDTO;
 import com.asmr.model.UserDTO;
@@ -18,5 +19,9 @@ public interface AsmrMapper {
 	public List<CommentDTO> commentList();
 	public void commentInsert(CommentDTO co);
 	public List<SaveDTO> colaboList();
-	public void votedUp(String username);
+	public void votedUp(String num);
+	public void votedSave(AsmrVoted vote);
+	public void votedDown(String num);
+	public void votedDelete(AsmrVoted vote);
+	public int votedCheck(AsmrVoted vote);
 }

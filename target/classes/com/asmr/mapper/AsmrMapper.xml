@@ -76,5 +76,36 @@
 		order by voted desc
 	</select>
 	
-	<!-- 쿼리만들기 -->
+	<!-- 좋아요 조회하기 -->
+	<select id="votedCheck" resultType="Integer">
+		select count(*)
+		from asmrvoted
+		where colabonum=#{colabonum} and voteuser=#{voteuser}
+	</select>
+	
+	<!-- 좋아요 +1 시키기 -->
+	<update id="votedUp">
+		update asmrsave
+		set
+			voted=voted+1
+		where num=#{num}
+	</update>
+	<!-- 좋아요 -1 시키기 -->
+	<update id="votedDown">
+		update asmrsave
+		set
+			voted=voted-1
+		where num=#{num}
+	</update>
+	
+	<!-- 좋아요 누가 했는지 저장해놓기 -->
+	<insert id="votedSave">
+		insert into asmrvoted(num,colabonum,voteuser)
+		values(voted_seq.nextval,#{colabonum},#{voteuser})
+	</insert>
+	<!-- 좋아요 누가 했는지 삭제해놓기 -->
+	<delete id="votedDelete">
+		delete from asmrvoted
+		where colabonum=#{colabonum} and voteuser=#{voteuser}
+	</delete>
 </mapper>

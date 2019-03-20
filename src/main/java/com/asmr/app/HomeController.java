@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.asmr.model.AsmrVoted;
 import com.asmr.model.CommentDTO;
 import com.asmr.model.SaveDTO;
 import com.asmr.model.UserDTO;
@@ -114,7 +116,7 @@ public class HomeController {
 	/* 음악배열불러오기(유저네임 넣어서) */
 	@GetMapping("loadColabo")
 	@ResponseBody
-	public String loadColabo(@RequestParam("username")String username,HttpSession session) {
+	public String loadColabo(@RequestParam("username")String username) {
 		SaveDTO loaded = mService.soundLoad(username);
 		if(loaded==null) {
 			return "저장된 값이 없습니다";
@@ -172,6 +174,7 @@ public class HomeController {
 		JSONArray jarr = new JSONArray();
 		for(SaveDTO cb : arr){
 			JSONObject obj = new JSONObject();
+			obj.put("num",cb.getNum());
 			obj.put("username",cb.getUsername());
 			obj.put("memo",cb.getMemo());
 			obj.put("voted",cb.getVoted());
@@ -183,9 +186,46 @@ public class HomeController {
 	/* 추천수 올리기 */
 	@GetMapping("votedUp")
 	@ResponseBody
-	public String votedUp(@RequestParam("username")String username) {
-		mService.votedUp(username);
+	@Transactional
+	public String votedUp(@RequestParam("num")String num,HttpSession session) {
+		String voteuser = (String) session.getAttribute("id");
+		mService.votedUp(num);
+		
+		
+		AsmrVoted vote = new AsmrVoted();
+		vote.setColabonum(Integer.parseInt(num));
+		vote.setVoteuser(voteuser);
+		mService.votedSave(vote);
 		return "1";
+	}
+	/* 추천수 내리기 */
+	@GetMapping("votedDown")
+	@ResponseBody
+	@Transactional
+	public String votedDown(@RequestParam("num")String num,HttpSession session) {
+		String voteuser = (String) session.getAttribute("id");
+		mService.votedDown(num);
+		
+		
+		AsmrVoted vote = new AsmrVoted();
+		vote.setColabonum(Integer.parseInt(num));
+		vote.setVoteuser(voteuser);
+		mService.votedDelete(vote);
+		return "1";
+	}
+	
+	/* 추천한 적 있는지 조회하기 */
+	@GetMapping("votedCheck")
+	@ResponseBody
+	public String votedCheck(@RequestParam("colabonum")String colabonum,HttpSession session) {
+		String voteuser = (String) session.getAttribute("id");
+		System.out.println("콜라보넘버 "+colabonum + "이고 아이디는 "+voteuser);
+		
+		AsmrVoted vote = new AsmrVoted();
+		vote.setColabonum(Integer.parseInt(colabonum));
+		vote.setVoteuser(voteuser);
+		System.out.println("리턴되는 값 : "+mService.votedCheck(vote).trim());
+		return mService.votedCheck(vote).trim();
 	}
 
 }

@@ -5,11 +5,11 @@
 <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&amp;subset=korean" rel="stylesheet">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
-
 <html>
-<script  src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script  src="https://use.fontawesome.com/7ad89d9866.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://use.fontawesome.com/7ad89d9866.js"></script>
 <script type="text/javascript">
+
 $(document).ready(function(){
 	var water = new Audio('resources/music/water.mp3');
 	var bug = new Audio('resources/music/bug.mp3');
@@ -378,6 +378,7 @@ $(document).ready(function(){
 			alert("error : "+ e);
 		}
 	});
+    /* 댓글 엔터키 등록 */
 	$("#msg").keyup(function(){
 		if(event.keyCode==13){
 			$.ajax({
@@ -405,7 +406,7 @@ $(document).ready(function(){
 			});
 		}
 	});
-	
+	var clickedTr = 0;
 	/* 조합리스트 불러오기 */
 	$.ajax({
 		url:"colaboList",
@@ -414,36 +415,48 @@ $(document).ready(function(){
 			if(data!=null){
 				data = $.parseJSON(data);
 				var htmlStr="";
+				var state = "ok";
 				htmlStr +="<table class='table table-striped table-dark'>";
 				for(var i=0; i<data.length;i++){
 					htmlStr +="<tr>";
+					htmlStr +="<td style='display:none;'>"+data[i].num+"</td>";
 					htmlStr +="<td>"+data[i].username+"</td>";
 					htmlStr +="<td>"+data[i].memo+"</td>";
 					htmlStr +="<td>"+data[i].voted+"</td>";
-					htmlStr +="<td><button class='btn-secondary like-review'><i class='fa fa-heart' aria-hidden='true'></i> Like</button></td>";
+					$.ajax({
+						type:"get",
+					     url:"votedCheck?colabonum="+data[i].num,
+					     async: false,
+					     success: function(data){
+					    	if(data=="no"){
+					    		state = "no";
+					    	}
+					    	else if(data=="ok"){
+					    		state = "ok";
+					    	}
+					      },
+					      error:function(e){
+
+					      }
+					});
+					if(state=="ok"){
+						htmlStr +="<td class='likeBox'><button class='btn-secondary like-review goLike'><i class='fa fa-heart' aria-hidden='true'></i> Like</button></td>";
+					}
+					else{
+						htmlStr +="<td class='likeBox'><button class='btn-secondary like-review backLike'><i class='fa fa-heart' aria-hidden='true'></i> You liked this</button></td>";
+					}
 					htmlStr +="</tr>";
 				}
 				htmlStr +="</table>";
 				$("#colabos").html(htmlStr);	
+				/* 불러옴과 동시에 클릭이벤트 적용 */
 				$("#colabos table tbody").on("click","tr",function(){
 					for(var i = 0; i<arr.length; i++){
 			    		arr[i].pause();
 			    		$(".picpic").eq(i).css("opacity",0.4);
 						$(".volumeGra").eq(i).css("display","none");
 			 		}
-					var username = $("td:eq(0)",this).text();
-					
-					/* 수정중 */
-					$.ajax({
-						type:"get",
-					     url:"votedUp?username="+username,
-					     success: function(data){
-					    	
-					      },
-					      error:function(e){
-					         alert("오류");
-					      }
-					});
+					var username = $("td:eq(1)",this).text();
 					$.ajax({
 					     type:"get",
 					     url:"loadColabo?username="+username,
@@ -457,7 +470,7 @@ $(document).ready(function(){
 					    	};
 					      },
 					      error:function(e){
-					         alert("오류");
+					         alert("클릭이벤트 적용실패");
 					      }
 					});
 				});
@@ -467,15 +480,136 @@ $(document).ready(function(){
 			alert("에러났다");
 		}
 	});
-
-	$(function(){
-	    $(document).on('click', '.like-review', function(e) {
-	        $(this).html('<i class="fa fa-heart" aria-hidden="true"></i> You liked this');
-	        $(this).children('.fa-heart').addClass('animate-like');
-	    });
+	
+	/* 좋아요취소할때 */
+	 $(document).on('click', '.backLike', function(e) {
+		var index = $(this).parent().parent().index();
+		$("#colabos table tbody tr:eq("+index+") td:last").html("<button class='btn-secondary like-review goLike'><i class='fa fa-heart animate-like' aria-hidden='true'></i> Like</button>");
+	    $(this).children('.fa-heart').addClass('animate-like');
+		/* 좋아요 db -1 시키기 */
+		var colabonum = $("#colabos table tbody tr:eq("+index+") td:first").text();
+		$.ajax({
+			type:"get",
+		     url:"votedDown?num="+colabonum,
+		     async: false,
+		     success: function(data){
+		    	 setTimeout(function() { colabo(); }, 1000);
+		      },
+		      error:function(e){
+		         alert("싫어요 과정에서 문제");
+		      }
+		});
+	});
+	 /* 좋아요버튼누를때 */
+	 $(document).on('click', '.goLike', function(e) {
+		 var index = $(this).parent().parent().index();
+		 $("#colabos table tbody tr:eq("+index+") td:last").html("<button class='btn-secondary like-review backLike'><i class='fa fa-heart animate-like' aria-hidden='true'></i> You liked this</button>");
+	     $(this).children('.fa-heart').addClass('animate-like');
+		/* 좋아요 db +1 시키기 */
+		var colabonums = $("#colabos table tbody tr:eq("+index+") td:first").text();
+		$.ajax({
+			type:"get",
+		     url:"votedUp?num="+colabonums,
+		     success: function(data){
+		    	 setTimeout(function() { colabo(); }, 1000);
+		      },
+		      error:function(e){
+		         alert("좋아요 과정에서 문제");
+		      }
+		});
 	});
 })
+var water = new Audio('resources/music/water.mp3');
+var bug = new Audio('resources/music/bug.mp3');
+var cafe = new Audio('resources/music/cafe.mp3');
+var fire = new Audio('resources/music/fire.mp3');
+var forest = new Audio('resources/music/forest.mp3');
+var home = new Audio('resources/music/home.mp3');
+var library = new Audio('resources/music/library.mp3');
+var night = new Audio('resources/music/night.mp3');
+var paris = new Audio('resources/music/paris.mp3');
+var rain = new Audio('resources/music/rain.mp3');
+var sea = new Audio('resources/music/sea.mp3');
+var snow = new Audio('resources/music/snow.mp3');
+var thunder = new Audio('resources/music/thunder.mp3');
+var train = new Audio('resources/music/train.mp3');
+var wind = new Audio('resources/music/wind.mp3');
+var arr = new Array(bug,fire,forest,home,library,night,paris,rain,sea,snow,thunder,train,wind,water,cafe);
+function colabo(){
+	$.ajax({
+		url:"colaboList",
+		type:"get",
+		success:function(data){
+			if(data!=null){
+				data = $.parseJSON(data);
+				var htmlStr="";
+				var state = "ok";
+				htmlStr +="<table class='table table-striped table-dark'>";
+				for(var i=0; i<data.length;i++){
+					htmlStr +="<tr>";
+					htmlStr +="<td style='display:none;'>"+data[i].num+"</td>";
+					htmlStr +="<td>"+data[i].username+"</td>";
+					htmlStr +="<td>"+data[i].memo+"</td>";
+					htmlStr +="<td>"+data[i].voted+"</td>";
+					$.ajax({
+						type:"get",
+					     url:"votedCheck?colabonum="+data[i].num,
+					     async: false,
+					     success: function(data){
+					    	if(data=="no"){
+					    		state = "no";
+					    	}
+					    	else if(data=="ok"){
+					    		state = "ok";
+					    	}
+					      },
+					      error:function(e){
 
+					      }
+					});
+					if(state=="ok"){
+						htmlStr +="<td class='likeBox'><button class='btn-secondary like-review goLike'><i class='fa fa-heart' aria-hidden='true'></i> Like</button></td>";
+					}
+					else{
+						htmlStr +="<td class='likeBox'><button class='btn-secondary like-review backLike'><i class='fa fa-heart' aria-hidden='true'></i> You liked this</button></td>";
+					}
+					htmlStr +="</tr>";
+				}
+				htmlStr +="</table>";
+				$("#colabos").html(htmlStr);	
+				/* 불러옴과 동시에 클릭이벤트 적용 */
+				$("#colabos table tbody").on("click","tr",function(){
+					clickedTr = $(this).index();
+					for(var i = 0; i<arr.length; i++){
+			    		arr[i].pause();
+			    		$(".picpic").eq(i).css("opacity",0.4);
+						$(".volumeGra").eq(i).css("display","none");
+			 		}
+					var username = $("td:eq(1)",this).text();
+					$.ajax({
+					     type:"get",
+					     url:"loadColabo?username="+username,
+					     success: function(data){
+					    	var dataString = data.split(',');
+					    	for(var i in dataString){
+					    		arr[dataString[i]].play();
+					    		arr[dataString[i]].loop = true;
+					    		$(".picpic").eq(dataString[i]).css("opacity",1.0);
+								$(".volumeGra").eq(dataString[i]).css("display","inline");
+					    	};
+					      },
+					      error:function(e){
+					         alert("클릭이벤트 적용실패");
+					      }
+					});
+				});
+			}
+		},
+		error:function(e){
+			alert("에러났다");
+		}
+	});
+}
 </script>
 <style>
 input[type="text"]{
@@ -925,7 +1059,7 @@ top: 0px;
     </div>
     <div class="boardContent">
     	<c:if test="${empty sessionScope.id }">
-		  	<p>please login to Siesta</p>
+		  	<p style="font-family: 'Caveat', cursive;font-size:2em;">please login to Siesta</p>
 	  	</c:if>
 	    <c:if test="${not empty sessionScope.id  }">
 	    	<p class="loginon">본인만의 조합을 저장하고 불러오세요</p>
