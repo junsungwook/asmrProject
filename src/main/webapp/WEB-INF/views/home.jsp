@@ -44,12 +44,16 @@ $(document).ready(function(){
 				str += ",";
 			}
 		}
+		if(str==""){
+			alert("please select your colabo!");
+			return false;
+		}
 		$.ajax({
 		     type:"get",
 		     url:"sounds?sound="+str+"&memo="+memo,
 		     success: function(data){
 		    	 alert("저장하셨습니다. 다음 번 로그인부터 불러올 수 있습니다");
-		    	 location.reload();
+		    	 colabo();
 		      },
 		      error:function(e){
 		         alert("다시 시도해주세요");
@@ -366,8 +370,8 @@ $(document).ready(function(){
 				for(var i=0; i<data.length;i++){
 					htmlStr +="<tr>";
 					htmlStr +="<td>"+data[i].writer+"</td>";
-					htmlStr +="<td>"+data[i].regdate+"</td>";
 					htmlStr +="<td>"+data[i].msg+"</td>";
+					htmlStr +="<td>"+data[i].regdate+"</td>";
 					htmlStr +="</tr>";
 				}
 				htmlStr +="</table>";
@@ -863,13 +867,19 @@ top: 0px;
 	    	margin-top:20px;
 	    	width: 60%;
 	    }
-	    .boardTab .boardContent #colabos{
-	    	display: inline-block;
+	    .boardTab .boardContent .view{
+	   	 	display: inline-block;
 	    	width: 60%;
 	    	margin: 0 auto;
 	    	height:40%;
+	    	overflow:hidden; 
+	    }
+	    .boardTab .boardContent .view #colabos{
+	    	display: inline-block;
+	    	width: 660px;
+	    	height:100%;
 	    	overflow-x:hidden; 
- 			overflow-y:auto;
+ 			overflow-y:scroll;
 	    }
 	    .boardTab .boardContent #colabos .table{
 	    	width: 100%;
@@ -1077,7 +1087,9 @@ top: 0px;
 			</div>
 			<br><br><br>
 			<p class="loginon">다른 사용자들의 조합을 들어보고 추천하세요</p>
-			<div id="colabos">
+			<div class="view">
+				<div id="colabos">
+				</div>
 			</div>
 		</c:if>
     </div>
